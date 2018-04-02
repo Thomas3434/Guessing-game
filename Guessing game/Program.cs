@@ -8,7 +8,6 @@ namespace Guessing_game
 {
     class Program
     {
-
         static int guesses; //amount of guesses that the user has done
         static int target; //the number that the user has to guess
 
@@ -60,8 +59,8 @@ namespace Guessing_game
             if (inputNumber == target)
             {
                 Console.WriteLine("Correct! You won in {0} attempts!", guesses);
-                Console.ReadLine();
-                return; //TO-DO: make a 'retry' option and restart the game if chosen.
+                Console.WriteLine("=================================");
+                Retry();
             }
 
             else if (inputNumber > target)
@@ -75,5 +74,41 @@ namespace Guessing_game
 
             Console.ReadLine();
         }
+
+        static bool Retry()
+        {
+            /*
+             * Asks user to either continue and restart the game or exit the game.
+             */
+            Console.WriteLine("Want to play again?");
+            Console.WriteLine("1) Yes");
+            Console.WriteLine("2) No");
+            Console.Write("My choice:");
+            string myChoice = Console.ReadLine();
+
+            if (myChoice == "1")
+            {
+                //Would be more elegant if I could use the code in the Main method instead.
+                Console.Clear();
+                guesses = 0;
+                Console.WriteLine("Guess a number from 1 to 100!");
+                GenerateTarget();
+                return true;
+            }
+
+            else if (myChoice == "2")
+            {
+                return false;
+            }
+
+            else //This filters our invalid inputs.
+            {
+                Console.WriteLine("Choose either 1 or 2.");
+                Retry();
+                return true;
+            }
+
+        }
+
     }
 }
