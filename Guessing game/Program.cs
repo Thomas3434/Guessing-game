@@ -13,9 +13,50 @@ namespace Guessing_game
 
         static void Main(string[] args)
         {
+            bool firstGame = true; // this parameter is used to determine if the 'want to play again?' option from GuessingGame should be shown.
+            GuessingGame(firstGame);
+        }
+
+        static void GuessingGame(bool firstGame)
+        /* Immediately calls StartGame if firstGame is set to true.
+         * If not then it will asks the user if they want to play again, run the game again if they do or exits if they dont.
+         */
+        {
+            if (firstGame == true)
+            {
+                StartGame();
+            }
+            else
+            {
+                Console.WriteLine("Want to play again?");
+                Console.WriteLine("1) Yes");
+                Console.WriteLine("2) No");
+                Console.Write("My choice:");
+                string myChoice = Console.ReadLine();
+
+                if (myChoice == "1")
+                {
+                    StartGame();
+                }
+
+                else if (myChoice == "2")
+                {
+                    return;
+                }
+
+                else //This filters our invalid inputs.
+                {
+                    Console.WriteLine("Choose either 1 or 2.");
+                    GuessingGame(firstGame);
+                }
+            }
+        }
+
+        static void StartGame()
+        {
             //Clears the screen, resets the amount of guesses, shows startup message and start 'GenerateTarget' method
             Console.Clear();
-            guesses = 0;
+            guesses = 1;
             Console.WriteLine("Guess a number from 1 to 100!");
             GenerateTarget();
         }
@@ -60,7 +101,8 @@ namespace Guessing_game
             {
                 Console.WriteLine("Correct! You won in {0} attempts!", guesses);
                 Console.WriteLine("=================================");
-                Retry();
+                bool firstGame = false; //This lets GuessingGame know that it is not the user's first game
+                GuessingGame(firstGame); //Prompts the menu to restart or exit the game 
             }
 
             else if (inputNumber > target)
@@ -70,45 +112,9 @@ namespace Guessing_game
                 Console.WriteLine("Higher!");
 
             guesses++;
-            Guess(target);
+            Guess(target); //starts another guessing attempt
 
             Console.ReadLine();
         }
-
-        static bool Retry()
-        {
-            /*
-             * Asks user to either continue and restart the game or exit the game.
-             */
-            Console.WriteLine("Want to play again?");
-            Console.WriteLine("1) Yes");
-            Console.WriteLine("2) No");
-            Console.Write("My choice:");
-            string myChoice = Console.ReadLine();
-
-            if (myChoice == "1")
-            {
-                //Would be more elegant if I could use the code in the Main method instead.
-                Console.Clear();
-                guesses = 0;
-                Console.WriteLine("Guess a number from 1 to 100!");
-                GenerateTarget();
-                return true;
-            }
-
-            else if (myChoice == "2")
-            {
-                return false;
-            }
-
-            else //This filters our invalid inputs.
-            {
-                Console.WriteLine("Choose either 1 or 2.");
-                Retry();
-                return true;
-            }
-
-        }
-
     }
 }
