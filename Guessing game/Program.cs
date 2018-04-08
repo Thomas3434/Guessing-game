@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace Guessing_game
 {
-    class Program
+    internal sealed class Program
     {
-        static int guesses; //amount of guesses that the user has done
-        static int target; //the number that the user has to guess
-
+        private int numberOfGuesses; //amount of guesses that the user has done
+        private int numberToGuess; //the number that the user has to guess
+      
         static void Main(string[] args)
         {
             bool firstGame = true; // this parameter is used to determine if the 'want to play again?' option from GuessingGame should be shown.
-            GuessingGame(firstGame);
+            var p = new Program();
+            p.GuessingGame(firstGame);
         }
 
-        static void GuessingGame(bool firstGame)
+        private void GuessingGame(bool firstGame)
         /* Immediately calls StartGame if firstGame is set to true.
          * If not then it will asks the user if they want to play again, run the game again if they do or exits if they dont.
          */
@@ -26,6 +27,7 @@ namespace Guessing_game
             {
                 StartGame();
             }
+
             else
             {
                 Console.WriteLine("Want to play again?");
@@ -41,7 +43,7 @@ namespace Guessing_game
 
                 else if (myChoice == "2")
                 {
-                    return;
+                    Environment.Exit(0);
                 }
 
                 else //This filters our invalid inputs.
@@ -52,67 +54,71 @@ namespace Guessing_game
             }
         }
 
-        static void StartGame()
+        private void StartGame()
         {
-            //Clears the screen, resets the amount of guesses, shows startup message and start 'GenerateTarget' method
+            //Clears the screen, resets the amount of guesses, shows startup message and start 'GenerateNumberToGuess' method
             Console.Clear();
-            guesses = 1;
+            numberOfGuesses = 1;
             Console.WriteLine("Guess a number from 1 to 100!");
-            GenerateTarget();
+            GenerateNumberToGuess();
         }
 
-        static void GenerateTarget()
+        private void GenerateNumberToGuess()
         {
-            //Generates a number between 1 and 100 and passes this on to 'Guess' method
+            //Generates a number between 1 and 100 and passes this on to 'GuessingAttempt' method
             Random randomnumber = new Random();
-            target = randomnumber.Next(0, 100);
-            target++;
-            Guess(target);
+            numberToGuess = randomnumber.Next(0, 100)+1;
+            GuessingAttempt();
         }
 
-        static void Guess(int target)
+        private void GuessingAttempt()
         {
             /* 
-             * Requests a guess from the user and validates if the input is an integer.
-             * Integers get passed to 'Compare' method
-             * Non-Integers prompt an error message and restart this method
+             * Requests a guess from the user and validates the input.
+             * Non-Integers or integers outside the 1-100 range prompt an error message and restart this method
+             * Valid input gets passed to 'Compare' method
              */
             Console.Write("My guess: ");
             string myGuess = Console.ReadLine();
 
             int inputNumber;
-            if (!int.TryParse(myGuess, out inputNumber))
+            if (!int.TryParse(myGuess, out inputNumber) || (inputNumber > 100 || inputNumber < 1))
             {
-                Console.WriteLine("That is not a valid input.");
-                Guess(target);
+                Console.WriteLine("That is not a valid input. Please choose a number between 1 and 100.");
+                GuessingAttempt();
             }
+
             else
-                Compare(inputNumber, target);
+                Compare(inputNumber);
         }
 
-        static void Compare(int inputNumber, int target)
+        private void Compare(int inputNumber)
         {
             /*
-             * Compares the input from 'Guess' method with the number generated in 'GenerateTarget'method.
+             * Compares the input from 'Guessingattempt' method with the number generated in 'GenerateNumberToGuess'method.
              * Provides feedback wether the target number is higher, lower or matching the input.
              * Adds 1 to the amount of guesses done
              */
-            if (inputNumber == target)
+            if (inputNumber == numberToGuess)
             {
-                Console.WriteLine("Correct! You won in {0} attempts!", guesses);
+                Console.WriteLine("Correct! You won in {0} attempts!", numberOfGuesses);
                 Console.WriteLine("=================================");
                 bool firstGame = false; //This lets GuessingGame know that it is not the user's first game
                 GuessingGame(firstGame); //Prompts the menu to restart or exit the game 
             }
 
-            else if (inputNumber > target)
+            else if (inputNumber > numberToGuess)
+            {
                 Console.WriteLine("Lower!");
+            }
 
-            if (inputNumber < target)
+            if (inputNumber < numberToGuess)
+            {
                 Console.WriteLine("Higher!");
+            }
 
-            guesses++;
-            Guess(target); //starts another guessing attempt
+            numberOfGuesses++;
+            GuessingAttempt(); //starts another guessing attempt
 
             Console.ReadLine();
         }
