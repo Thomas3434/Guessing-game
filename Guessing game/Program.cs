@@ -36,20 +36,20 @@ namespace Guessing_game
                 Console.Write("My choice: ");
                 string myChoice = Console.ReadLine();
 
-                if (myChoice == "1")
+                switch (myChoice.ToLowerInvariant())
                 {
-                    StartGame();
-                }
+                    case "1":
+                        StartGame();
+                        break;
 
-                else if (myChoice == "2")
-                {
-                    Environment.Exit(0);
-                }
+                    case "2":
+                        Environment.Exit(0);
+                        break;
 
-                else //This filters our invalid inputs.
-                {
-                    Console.WriteLine("Choose either 1 or 2.");
-                    GuessingGame(firstGame);
+                    default:
+                        Console.WriteLine("Choose either 1 or 2.");
+                        GuessingGame(firstGame);
+                        break;
                 }
             }
         }
@@ -101,15 +101,8 @@ namespace Guessing_game
              */
             while (inputNumber != numberToGuess)
             {
-                if (inputNumber > numberToGuess)
-                {
-                    Console.WriteLine("Lower!");
-                }
-
-                else
-                {
-                    Console.WriteLine("Higher!");
-                }
+                string hint = (inputNumber > numberToGuess) ? "lower!" : "higher!";
+                Console.WriteLine(hint);
 
                 numberOfGuesses++;
                 GuessingAttempt();
